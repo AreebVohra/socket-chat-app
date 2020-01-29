@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { View, Text } from 'react-native';
 import io from 'socket.io-client';
 import { GiftedChat, Bubble } from 'react-native-gifted-chat';
@@ -6,7 +6,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 
 const USER_ID = '@userId';
 
-export default class ChatScreen extends React.Component {
+export default class ChatScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -96,7 +96,7 @@ export default class ChatScreen extends React.Component {
         wrapperStyle={{
           left: { backgroundColor: '#2ecc71' }
         }}
-        
+
       />
     )
   }
