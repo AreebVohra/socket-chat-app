@@ -3,8 +3,12 @@ import { createStackNavigator } from 'react-navigation-stack';
 
 import ChatScreen from '../screens/ChatScreen';
 import ChatRoomScreen from '../screens/ChatRoomScreen';
+import UserScreen from '../screens/UserScreen';
 
 const AppNavigator = createStackNavigator({
+    User: {
+        screen: UserScreen
+    },
     Chat: {
         screen: ChatScreen,
     },
@@ -14,8 +18,7 @@ const AppNavigator = createStackNavigator({
 }, {
     defaultNavigationOptions: {
         headerShown: false,
-    },
-    initialRouteName: 'Chatroom'
+    }
 });
 
 export default createAppContainer(AppNavigator);
