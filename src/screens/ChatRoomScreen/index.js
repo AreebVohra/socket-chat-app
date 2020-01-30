@@ -1,31 +1,27 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TextInput, Button } from 'react-native';
 import io from 'socket.io-client';
-import { TextInput } from 'react-native-gesture-handler';
 
 export default class ChatRoomScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      chatroom: ''
+      chatroom: '',
     };
 
     this.socket = io('http://192.168.0.34:3000');
   }
 
-  componentDidMount = () => {
-    this.socket.emit('')
+  chatRoom = (chatID) => {
+    this.socket.emit('chatCreated', chatID);
   }
-
 
   render() {
     return (
       <View style={styles.container}>
-        <TextInput
-          style={{ borderColor: '#000', borderWidth: 1, width: '80%', fontSize: 18 }}
-          value={this.state.chatroom}
-          onChange={chatroom => this.setState({ chatroom })}
-        />
+        <Button title="chat 1" onPress={() => this.chatRoom(1)} />
+        <Button title="chat 2" onPress={() => this.chatRoom(2)} />
+        <Button title="Goto Chat" onPress={() => this.props.navigation.navigate('Chat')} />
       </View>
     );
   }
@@ -37,5 +33,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%'
+  },
+  textInputStyle: {
+    borderColor: '#000',
+    borderWidth: 1,
+    width: '80%',
+    fontSize: 18
   }
 })
