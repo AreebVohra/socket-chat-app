@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, TouchableOpacity, Clipboard } from 'react-native';
 import io from 'socket.io-client';
-import { GiftedChat, Bubble } from 'react-native-gifted-chat';
+import { GiftedChat, Bubble, Message } from 'react-native-gifted-chat';
 import AsyncStorage from '@react-native-community/async-storage';
+import ReplyToFooter from '../../components/ReplyChatFooter';
+import ChatBubbleWithReply from '../../components/ChatBubbleWithReply';
 
 const USER_ID = '@userId';
 
@@ -11,7 +13,12 @@ export default class ChatScreen extends Component {
     super(props);
     this.state = {
       messages: [],
-      userId: null
+      userId: null,
+      username: '',
+
+      show_reply_to_footer: false,
+      reply_to: null,
+      reply_to_msg: null
     };
 
     this.determineUser = this.determineUser.bind(this);
@@ -82,7 +89,8 @@ export default class ChatScreen extends Component {
   }
 
   componentDidMount = async () => {
-
+    const username = await AsyncStorage.getItem('@username')
+    this.setState({ username })
   }
 
   renderBubble = props => {
@@ -96,27 +104,75 @@ export default class ChatScreen extends Component {
         wrapperStyle={{
           left: { backgroundColor: '#2ecc71' }
         }}
-
       />
     )
   }
 
+
   render() {
     var user = {
       _id: this.state.userId || -1,
-      name: 'user',
+      name: this.state.username,
       avatar: require('../../assets/user.png'),
     };
+    const { messages, } = this.state;
     return (
       <GiftedChat
-        messages={this.state.messages}
+        messages={messages}
         onSend={this.onSend}
         user={user}
-        renderBubble={this.renderBubble}
         renderUsernameOnMessage={true}
         timeTextStyle={{ left: { color: 'white' } }}
         scrollToBottom={true}
+        renderBubble={this.renderBubble}
+        renderMessage={this.renderMessage}
+        renderChatFooter={this.renderChatFooter}
+        onLongPress={this.onLongPress}
       />
     );
+  }
+
+  onLongPress = (context, message) => {
+    const options = ['Copy Text', 'Reply Message', 'Cancel'];
+    const cancelButtonIndex = options.length - 1;
+    context.actionSheet().showActionSheetWithOptions({
+      options,
+      cancelButtonIndex
+    }, (buttonIndex) => {
+      switch (buttonIndex) {
+        case 0:
+          Clipboard.setString(message.text);
+          break;
+        case 1:
+          this.setState({
+            reply_to: message.user.name,
+            reply_to_msg: message.text,
+            show_reply_to_footer: true,
+          });
+          break;
+      }
+    })
+
+  }
+
+  renderChatFooter = () => {
+    const { show_reply_to_footer, reply_to, reply_to_msg } = this.state;
+    if (show_reply_to_footer) { // only render if it's set to visible
+      return (
+        <ReplyToFooter
+          reply_to={reply_to}
+          reply_to_msg={reply_to_msg}
+          closeFooter={this.closeReplyToFooter} />
+      );
+    }
+    return null;
+  }
+
+  closeReplyToFooter = () => {
+    this.setState({
+      show_reply_to_footer: false,
+      reply_to: null,
+      reply_to_msg: null
+    });
   }
 }
