@@ -6,11 +6,11 @@ import ChatRoomScreen from '../screens/ChatRoomScreen';
 import UserScreen from '../screens/UserScreen';
 
 const AppNavigator = createStackNavigator({
-    User: {
-        screen: UserScreen
-    },
     Chat: {
         screen: ChatScreen,
+    },
+    User: {
+        screen: UserScreen
     },
     Chatroom: {
         screen: ChatRoomScreen
