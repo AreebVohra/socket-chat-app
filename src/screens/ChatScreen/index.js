@@ -31,6 +31,11 @@ export default class ChatScreen extends Component {
     this.determineUser();
   }
 
+  componentDidMount = async () => {
+    const username = await AsyncStorage.getItem('@username')
+    this.setState({ username })
+  }
+
   /**
    * When a user joins the chatroom, check if they are an existing user.
    * If they aren't, then ask the server for a userId.
@@ -88,10 +93,6 @@ export default class ChatScreen extends Component {
     return colors[sumChars % colors.length];
   }
 
-  componentDidMount = async () => {
-    const username = await AsyncStorage.getItem('@username')
-    this.setState({ username })
-  }
 
   renderBubble = props => {
     return (
@@ -108,27 +109,44 @@ export default class ChatScreen extends Component {
     )
   }
 
-
   render() {
     var user = {
       _id: this.state.userId || -1,
       name: this.state.username,
       avatar: require('../../assets/user.png'),
     };
-    const { messages, } = this.state;
+    const { messages } = this.state;
     return (
       <GiftedChat
         messages={messages}
         onSend={this.onSend}
         user={user}
         renderUsernameOnMessage={true}
-        timeTextStyle={{ left: { color: 'white' } }}
+        // timeTextStyle={{ left: { color: 'white' } }}
         scrollToBottom={true}
-        renderBubble={this.renderBubble}
-        renderMessage={this.renderMessage}
+        // renderBubble={this.renderBubble}
         renderChatFooter={this.renderChatFooter}
         onLongPress={this.onLongPress}
+        renderMessage={this.renderMessage}
       />
+    );
+  }
+
+  renderMessage = (msg) => {
+    const { reply_to, reply_to_msg } = msg.currentMessage;
+    const renderBubble = (reply_to && reply_to_msg) ? this.renderPreview : null;
+
+    let modified_msg = {
+      ...msg,
+      renderBubble
+    };
+
+    return <Message {...modified_msg} />
+  }
+
+  renderPreview = (bubbleProps) => {
+    return (
+      <ChatBubbleWithReply {...bubbleProps} />
     );
   }
 
