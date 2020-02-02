@@ -12,7 +12,7 @@ export default class UserScreen extends Component {
 
   onSubmit = async () => {
     await AsyncStorage.setItem('@username', this.state.username)
-    this.navigateTo('Chat')
+    this.navigateTo('Chatroom')
   }
 
   navigateTo = route => this.props.navigation.navigate(route)

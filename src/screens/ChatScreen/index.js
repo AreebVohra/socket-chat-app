@@ -26,7 +26,7 @@ export default class ChatScreen extends Component {
     this.onSend = this.onSend.bind(this);
     this._storeMessages = this._storeMessages.bind(this);
 
-    this.socket = io('http://192.168.0.34:3000');
+    this.socket = io('http://192.168.100.7:3000');
     this.socket.on('message', this.onReceivedMessage);
     this.determineUser();
   }
@@ -52,7 +52,7 @@ export default class ChatScreen extends Component {
             this.setState({ userId });
           });
         } else {
-          this.socket.emit('userJoined', userId);
+          this.socket.emit('userJoined', userId, this.props.navigation.getParam('selected'));
           this.setState({ userId });
         }
       })
@@ -72,7 +72,7 @@ export default class ChatScreen extends Component {
    * and store it in this component's state.
    */
   onSend(messages = []) {
-    this.socket.emit('message', messages[0]);
+    this.socket.emit('message', messages[0], this.props.navigation.getParam('selected'));
     this._storeMessages(messages);
   }
 
@@ -122,12 +122,12 @@ export default class ChatScreen extends Component {
         onSend={this.onSend}
         user={user}
         renderUsernameOnMessage={true}
-        // timeTextStyle={{ left: { color: 'white' } }}
+        timeTextStyle={{ left: { color: 'white' } }}
         scrollToBottom={true}
-        // renderBubble={this.renderBubble}
+        renderBubble={this.renderBubble}
         renderChatFooter={this.renderChatFooter}
         onLongPress={this.onLongPress}
-        renderMessage={this.renderMessage}
+      // renderMessage={this.renderMessage}
       />
     );
   }

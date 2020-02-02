@@ -6,19 +6,20 @@ import ChatRoomScreen from '../screens/ChatRoomScreen';
 import UserScreen from '../screens/UserScreen';
 
 const AppNavigator = createStackNavigator({
-    Chat: {
-        screen: ChatScreen,
-    },
     User: {
         screen: UserScreen
     },
     Chatroom: {
         screen: ChatRoomScreen
-    }
+    },
+    Chat: {
+        screen: ChatScreen,
+    },
 }, {
     defaultNavigationOptions: {
         headerShown: false,
-    }
+    },
+    initialRouteName: 'User'
 });
 
 export default createAppContainer(AppNavigator);
