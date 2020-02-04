@@ -10,7 +10,7 @@ export default class ChatRoomScreen extends Component {
       selectedRoomID: null
     };
 
-    this.socket = io('http://192.168.100.7:3000');
+    this.socket = io('http://192.168.0.34:3000');
     this.onRecieveRooms = this.onRecieveRooms.bind(this)
     this.getRooms = this.getRooms.bind(this);
     this.getRooms();
@@ -18,22 +18,22 @@ export default class ChatRoomScreen extends Component {
   }
 
   chatRoom = (chatID) => {
-    this.socket.emit('chatCreated', chatID);
-    this.setState({ selectedRoomID: chatID })
+    this.socket.emit('chatSelected', chatID);
+    this.props.navigation.navigate('Chat', { selected: chatID })
   }
 
   onRecieveRooms() {
-    this.socket.on('onRoomsAvailable', (rooms) => {
+    this.socket.on('roomsAvailable', (rooms) => {
       this.setState({
         chatRoom: [...rooms]
       })
     })
   }
 
-  getRooms() { this.socket.emit('onRoomsAvailable') }
+  getRooms() { this.socket.emit('roomsAvailable') }
 
   componentWillUnmount() {
-    this.socket.off('onRoomsAvailable')
+    this.socket.removeEventListener('roomsAvailable')
   }
 
   render() {
@@ -42,8 +42,6 @@ export default class ChatRoomScreen extends Component {
         {
           this.state.chatRoom.map(v => <Button key={v._id} title={v.name} onPress={() => this.chatRoom(v.chat_id)} />)
         }
-        < Button title="Goto Chat" onPress={() => this.props.navigation.navigate('Chat', { selected: this.state.selectedRoomID })
-        } />
       </View >
     );
   }

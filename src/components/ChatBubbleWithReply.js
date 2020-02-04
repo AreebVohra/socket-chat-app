@@ -4,7 +4,7 @@ import { MessageText, MessageImage, Time } from 'react-native-gifted-chat';
 
 const ChatBubbleWithReply = (props) => {
   const { position, children, currentMessage } = props;
-  const reply_header = (position == 'right') ? `you replied to ${currentMessage.reply_to}` : `${currentMessage.user.name} replied to ${currentMessage.reply_to}`;
+  const reply_header = (position == 'right') ? `you replied to ${props.reply_to}` : `${props.user.name} replied to ${props.reply_to}`;
   const reply_to_color = (position == 'right') ? '#d4d4d4' : '#a0a0a0';
   const reply_to_msg_color = (position == 'right') ? '#eee' : '#616161';
 
@@ -14,7 +14,7 @@ const ChatBubbleWithReply = (props) => {
         <View style={styles.reply_to_container}>
           <Text style={[styles.reply_to, { color: reply_to_color }]}>{reply_header}:</Text>
           <View style={styles.reply_to_msg_container}>
-            <Text style={[styles.reply_to_msg, { color: reply_to_msg_color }]}>"{currentMessage.reply_to_msg}"</Text>
+            <Text style={[styles.reply_to_msg, { color: reply_to_msg_color }]}>"{props.reply_to_msg}"</Text>
           </View>
         </View>
         <MessageText {...props} />
