@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, TextInput, Button } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import io from 'socket.io-client';
 
 export default class ChatRoomScreen extends Component {
@@ -40,7 +40,14 @@ export default class ChatRoomScreen extends Component {
     return (
       <View style={styles.container} >
         {
-          this.state.chatRoom.map(v => <Button key={v._id} title={v.name} onPress={() => this.chatRoom(v.chat_id)} />)
+          this.state.chatRoom.map(v =>
+            <TouchableOpacity key={v._id}
+              style={styles.roomButton}
+              onPress={() => this.chatRoom(v.chat_id)}
+            >
+              <Text style={{ fontSize: 18 }}>{v.name}</Text>
+            </TouchableOpacity>
+          )
         }
       </View >
     );
@@ -54,10 +61,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: '100%'
   },
-  textInputStyle: {
-    borderColor: '#000',
+  roomButton: {
     borderWidth: 1,
-    width: '80%',
-    fontSize: 18
-  }
+    borderColor: 'black',
+    paddingHorizontal: '15%',
+    paddingVertical: '5%',
+    borderRadius: 15,
+    marginVertical: '2%'
+  },
 })
