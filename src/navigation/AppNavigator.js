@@ -4,7 +4,7 @@ import { createStackNavigator } from 'react-navigation-stack';
 import ChatScreen from '../screens/ChatScreen';
 import ChatRoomScreen from '../screens/ChatRoomScreen';
 import UserScreen from '../screens/UserScreen';
-import GroupScreen from '../screens/GroupScreen';
+import SettingScreen from '../screens/SettingScreen';
 
 const AppNavigator = createStackNavigator({
     User: {
@@ -16,8 +16,8 @@ const AppNavigator = createStackNavigator({
     Chat: {
         screen: ChatScreen,
     },
-    Groups: {
-        screen: GroupScreen
+    Setting: {
+        screen: SettingScreen
     }
 }, {
     defaultNavigationOptions: {
