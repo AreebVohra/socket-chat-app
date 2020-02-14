@@ -1,13 +1,28 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import io from 'socket.io-client';
+import { Checkbox } from 'react-native-paper';
 
 export default class ChatRoomScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
       chatRoom: [],
-      selectedRoomID: null
+      selectedRoomID: [
+        {
+          roomID: 1,
+          roomStatus: true
+        },
+        {
+          roomID: 2,
+          roomStatus: true
+        },
+        {
+          roomID: 3,
+          roomStatus: true
+        }
+      ],
+      room1: true
     };
 
     this.socket = io('http://192.168.0.34:3000');
@@ -36,19 +51,32 @@ export default class ChatRoomScreen extends Component {
     this.socket.removeEventListener('roomsAvailable')
   }
 
+  pushRoom = (roomID) => {
+    this.state.selectedRoomID.push(roomID)
+  }
+
   render() {
+    const { room1 } = this.state
     return (
-      <View style={styles.container} >
+      <View style={styles.container}>
         {
-          this.state.chatRoom.map(v =>
-            <TouchableOpacity key={v._id}
-              style={styles.roomButton}
-              onPress={() => this.chatRoom(v.chat_id)}
-            >
-              <Text style={{ fontSize: 18 }}>{v.name}</Text>
-            </TouchableOpacity>
+          this.state.chatRoom.map((v, index) =>
+            <View style={{ flexDirection: 'row' }} key={index}>
+              <TouchableOpacity
+                style={styles.roomButton}
+                onPress={() => this.chatRoom([v.chat_id])}
+              >
+                <Text style={{ fontSize: 18 }}>{v.name}</Text>
+              </TouchableOpacity>
+            </View>
           )
         }
+        <TouchableOpacity
+          style={styles.roomButton}
+          onPress={() => this.chatRoom([1, 2, 3])}
+        >
+          <Text style={{ fontSize: 18 }}>All Rooms</Text>
+        </TouchableOpacity>
       </View >
     );
   }
