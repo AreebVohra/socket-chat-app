@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, Clipboard } from 'react-native';
+import { View, Text, TouchableOpacity, Clipboard, StyleSheet } from 'react-native';
 import io from 'socket.io-client';
 import { GiftedChat, Bubble, Message } from 'react-native-gifted-chat';
 import AsyncStorage from '@react-native-community/async-storage';
 import ReplyToFooter from '../../components/ReplyChatFooter';
 import ChatBubbleWithReply from '../../components/ChatBubbleWithReply';
+import Feather from 'react-native-vector-icons/Feather'
+import ImagePicker from 'react-native-image-picker';
 
 const USER_ID = '@userId';
 
@@ -15,7 +17,7 @@ export default class ChatScreen extends Component {
       messages: [],
       userId: null,
       username: '',
-
+      avatarSource: null,
       show_reply_to_footer: false,
       reply_msg_id: null,
       reply_to: null,
@@ -99,6 +101,36 @@ export default class ChatScreen extends Component {
     )
   }
 
+  uploadImage = () => {
+    const options = {
+      title: 'Select Avatar',
+      // customButtons: [{ name: 'fb', title: 'Choose Photo from Facebook' }],
+      storageOptions: {
+        skipBackup: true,
+        path: 'images',
+      },
+    };
+
+    ImagePicker.showImagePicker(options, (response) => {
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      }
+      // else if (response.customButton) {
+      //   console.log('User tapped custom button: ', response.customButton);
+      // } 
+      else {
+        // const source = { uri: response.uri };
+        const source = { uri: 'data:image/jpeg;base64,' + response.data };
+
+        this.setState({
+          avatarSource: source,
+        });
+      }
+    });
+  }
+
   render() {
     var user = {
       _id: this.state.userId || -1,
@@ -117,6 +149,11 @@ export default class ChatScreen extends Component {
         renderBubble={this.renderBubble}
         renderChatFooter={this.renderChatFooter}
         onLongPress={this.onLongPress}
+        renderActions={() => (
+          <TouchableOpacity style={styles.uploadImage} onPress={this.uploadImage}>
+            <Feather name='image' size={25} color='#0084ff' />
+          </TouchableOpacity>
+        )}
       // renderMessage={this.renderMessage}
       />
     );
@@ -174,8 +211,7 @@ export default class ChatScreen extends Component {
           reply_to_msg={reply_to_msg}
           closeFooter={this.closeReplyToFooter} />
       );
-    }
-    return null;
+    } else return null;
   }
 
   closeReplyToFooter = () => {
@@ -186,3 +222,10 @@ export default class ChatScreen extends Component {
     });
   }
 }
+
+const styles = StyleSheet.create({
+  uploadImage: {
+    padding: 8,
+    paddingRight: 0
+  }
+})
