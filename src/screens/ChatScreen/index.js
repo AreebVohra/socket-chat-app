@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, Clipboard, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, Clipboard, StyleSheet, Image } from 'react-native';
 import io from 'socket.io-client';
-import { GiftedChat, Bubble, Message } from 'react-native-gifted-chat';
+import { GiftedChat, Bubble, Message, MessageImage } from 'react-native-gifted-chat';
 import AsyncStorage from '@react-native-community/async-storage';
 import ReplyToFooter from '../../components/ReplyChatFooter';
 import ChatBubbleWithReply from '../../components/ChatBubbleWithReply';
@@ -43,6 +43,36 @@ export default class ChatScreen extends Component {
     this.socket.removeEventListener('message')
   }
 
+  uploadImage = () => {
+    const options = {
+      title: 'Select Avatar',
+      // customButtons: [{ name: 'fb', title: 'Choose Photo from Facebook' }],
+      storageOptions: {
+        skipBackup: true,
+        path: 'images',
+      },
+    };
+
+    ImagePicker.showImagePicker(options, (response) => {
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      }
+      // else if (response.customButton) {
+      //   console.log('User tapped custom button: ', response.customButton);
+      // } 
+      else {
+        const source = { uri: response.uri };
+        // const source = { uri: 'data:image/jpeg;base64,' + response.data };
+
+        this.setState({
+          avatarSource: response.uri,
+        });
+      }
+    });
+  }
+
   determineUser() {
     AsyncStorage.getItem(USER_ID)
       .then((userId) => {
@@ -65,7 +95,8 @@ export default class ChatScreen extends Component {
   onSend(messages = []) {
     const { reply_msg_id, reply_to, reply_to_msg } = this.state;
     messages[0].reply = { reply_msg_id, reply_to, reply_to_msg }
-    this.socket.emit('message', messages[0], this.props.navigation.getParam('selected'));
+    messages[0].image = this.state.avatarSource
+    // this.socket.emit('message', messages[0], this.props.navigation.getParam('selected'));
     this._storeMessages(messages);
     this.closeReplyToFooter()
   }
@@ -76,14 +107,6 @@ export default class ChatScreen extends Component {
         messages: GiftedChat.append(previousState.messages, messages),
       };
     });
-  }
-
-  getColor(username) {
-    let sumChars = 0;
-    for (let i = 0; i < username.length; i++) sumChars += username.charCodeAt(i)
-
-    const colors = ['#e67e22', '#2ecc71', '#3498db', '#8e44ad', '#e74c3c', '#1abc9c', '#2c3e50',];
-    return colors[sumChars % colors.length];
   }
 
   renderBubble = props => {
@@ -99,36 +122,6 @@ export default class ChatScreen extends Component {
         }}
       />
     )
-  }
-
-  uploadImage = () => {
-    const options = {
-      title: 'Select Avatar',
-      // customButtons: [{ name: 'fb', title: 'Choose Photo from Facebook' }],
-      storageOptions: {
-        skipBackup: true,
-        path: 'images',
-      },
-    };
-
-    ImagePicker.showImagePicker(options, (response) => {
-      if (response.didCancel) {
-        console.log('User cancelled image picker');
-      } else if (response.error) {
-        console.log('ImagePicker Error: ', response.error);
-      }
-      // else if (response.customButton) {
-      //   console.log('User tapped custom button: ', response.customButton);
-      // } 
-      else {
-        // const source = { uri: response.uri };
-        const source = { uri: 'data:image/jpeg;base64,' + response.data };
-
-        this.setState({
-          avatarSource: source,
-        });
-      }
-    });
   }
 
   render() {
@@ -158,6 +151,15 @@ export default class ChatScreen extends Component {
       />
     );
   }
+
+  getColor(username) {
+    let sumChars = 0;
+    for (let i = 0; i < username.length; i++) sumChars += username.charCodeAt(i)
+
+    const colors = ['#e67e22', '#2ecc71', '#3498db', '#8e44ad', '#e74c3c', '#1abc9c', '#2c3e50',];
+    return colors[sumChars % colors.length];
+  }
+
 
   renderMessage = (msg) => {
     const { reply_to, reply_to_msg } = this.state;
@@ -225,7 +227,7 @@ export default class ChatScreen extends Component {
 
 const styles = StyleSheet.create({
   uploadImage: {
-    padding: 8,
+    padding: 10,
     paddingRight: 0
   }
 })
