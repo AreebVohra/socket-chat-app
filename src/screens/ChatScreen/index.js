@@ -17,7 +17,7 @@ export default class ChatScreen extends Component {
       messages: [],
       userId: null,
       username: '',
-      avatarSource: null,
+      imageSend: null,
       show_reply_to_footer: false,
       reply_msg_id: null,
       reply_to: null,
@@ -58,17 +58,8 @@ export default class ChatScreen extends Component {
         console.log('User cancelled image picker');
       } else if (response.error) {
         console.log('ImagePicker Error: ', response.error);
-      }
-      // else if (response.customButton) {
-      //   console.log('User tapped custom button: ', response.customButton);
-      // } 
-      else {
-        const source = { uri: response.uri };
-        // const source = { uri: 'data:image/jpeg;base64,' + response.data };
-
-        this.setState({
-          avatarSource: response.uri,
-        });
+      } else {
+        this.setState({ imageSend: response.uri });
       }
     });
   }
@@ -95,7 +86,7 @@ export default class ChatScreen extends Component {
   onSend(messages = []) {
     const { reply_msg_id, reply_to, reply_to_msg } = this.state;
     messages[0].reply = { reply_msg_id, reply_to, reply_to_msg }
-    messages[0].image = this.state.avatarSource
+    messages[0].image = this.state.imageSend
     // this.socket.emit('message', messages[0], this.props.navigation.getParam('selected'));
     this._storeMessages(messages);
     this.closeReplyToFooter()
@@ -220,7 +211,8 @@ export default class ChatScreen extends Component {
     this.setState({
       show_reply_to_footer: false,
       reply_to: null,
-      reply_to_msg: null
+      reply_to_msg: null,
+      imageSend: null
     });
   }
 }
