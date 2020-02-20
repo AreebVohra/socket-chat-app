@@ -13,28 +13,28 @@ class LoginScreen extends Component {
         super(props);
         this.state = {
             email: { value: '', error: '' },
-            setEmail: { value: '', error: '' },
             password: { value: '', error: '' },
-            setPassword: { value: '', error: '' }
         };
     }
 
     _onLoginPressed = () => {
-        const { email, setEmail, password, setPassword } = this.state
+        const { email, password } = this.state;
 
         const emailError = emailValidator(email.value);
         const passwordError = passwordValidator(password.value);
 
         if (emailError || passwordError) {
-            setEmail({ ...email, error: emailError });
-            setPassword({ ...password, error: passwordError });
+            this.setState({
+                email: { value: email.value, error: emailError },
+                password: { value: password.value, error: passwordError }
+            })
             return;
         }
         this.props.navigation.navigate('Chatroom');
     };
 
     render() {
-        const { email, setEmail, password, setPassword } = this.state
+        const { email, password } = this.state;
         return (
             <Background>
                 <Logo />
@@ -45,7 +45,7 @@ class LoginScreen extends Component {
                     label="Email"
                     returnKeyType="next"
                     value={email.value}
-                    onChangeText={text => setEmail({ value: text, error: '' })}
+                    onChangeText={text => this.setState({ email: { value: text, error: '' } })}
                     error={!!email.error}
                     errorText={email.error}
                     autoCapitalize="none"
@@ -58,7 +58,7 @@ class LoginScreen extends Component {
                     label="Password"
                     returnKeyType="done"
                     value={password.value}
-                    onChangeText={text => setPassword({ value: text, error: '' })}
+                    onChangeText={text => this.setState({ password: { value: text, error: '' } })}
                     error={!!password.error}
                     errorText={password.error}
                     secureTextEntry
@@ -74,7 +74,7 @@ class LoginScreen extends Component {
 
                 <View style={styles.row}>
                     <Text style={styles.label}>Don’t have an account? </Text>
-                    <TouchableOpacity /* onPress={() => navigation.navigate('RegisterScreen')}*/>
+                    <TouchableOpacity /*onPress={() => navigation.navigate('RegisterScreen')}*/ >
                         <Text style={styles.link}>Sign up</Text>
                     </TouchableOpacity>
                 </View>
