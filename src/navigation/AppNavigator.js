@@ -6,8 +6,12 @@ import ChatRoomScreen from '../screens/ChatRoomScreen';
 import UserScreen from '../screens/UserScreen';
 import SettingScreen from '../screens/SettingScreen';
 import LoginScreen from '../screens/LoginScreen';
+import RegisterScreen from '../screens/RegisterScreen';
 
 const AppNavigator = createStackNavigator({
+    Register: {
+        screen: RegisterScreen
+    },
     Login: {
         screen: LoginScreen
     },
@@ -27,7 +31,7 @@ const AppNavigator = createStackNavigator({
     defaultNavigationOptions: {
         headerShown: false,
     },
-    initialRouteName: 'Login'
+    initialRouteName: 'Register'
 });
 
 export default createAppContainer(AppNavigator);
