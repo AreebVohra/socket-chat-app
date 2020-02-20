@@ -45,7 +45,7 @@ export default class ChatScreen extends Component {
 
   uploadImage = () => {
     const options = {
-      title: 'Select Avatar',
+      title: 'Select Option',
       // customButtons: [{ name: 'fb', title: 'Choose Photo from Facebook' }],
       storageOptions: {
         skipBackup: true,
@@ -87,7 +87,7 @@ export default class ChatScreen extends Component {
     const { reply_msg_id, reply_to, reply_to_msg } = this.state;
     messages[0].reply = { reply_msg_id, reply_to, reply_to_msg }
     messages[0].image = this.state.imageSend
-    // this.socket.emit('message', messages[0], this.props.navigation.getParam('selected'));
+    this.socket.emit('message', messages[0], this.props.navigation.getParam('selected'));
     this._storeMessages(messages);
     this.closeReplyToFooter()
   }
