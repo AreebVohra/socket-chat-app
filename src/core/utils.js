@@ -18,3 +18,12 @@ export const nameValidator = name => {
 
   return '';
 };
+
+export const phoneValidator = phone => {
+  const re = /[+][9][2][0-9]\d{9}/;
+  
+  if (!phone || phone.length <= 0) return 'Phone number cannot be empty.';
+  if (!re.test(phone)) return 'Ooops! We need a valid Phone number.';
+
+  return '';
+};
