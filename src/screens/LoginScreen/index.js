@@ -8,18 +8,19 @@ import TextInput from '../../components/TextInput';
 import { theme } from '../../core/theme';
 import { phoneValidator, passwordValidator } from '../../core/utils';
 import AuthController from '../../controllers/AuthController';
+import AsyncStorage from '@react-native-community/async-storage';
 
 class LoginScreen extends Component {
     constructor(props) {
         super(props);
         this.AuthController = new AuthController()
         this.state = {
-            phone: { value: '', error: '' },
-            password: { value: '', error: '' },
+            phone: { value: '+923422114890', error: '' },
+            password: { value: 'abc12', error: '' },
         };
     }
 
-    _onLoginPressed = () => {
+    _onLoginPressed = async () => {
         const { phone, password } = this.state;
 
         const phoneError = phoneValidator(phone.value);
@@ -33,16 +34,15 @@ class LoginScreen extends Component {
             return;
         }
 
-        const body = {
-            username: "areeb",
-            password: "abc123"
-        }
+        const body = { phone: phone.value, password: password.value }
         const response = await this.AuthController.LoginAsync(body)
 
         if (response.status === true) {
+            AsyncStorage.setItem('@userID', response.id)
+            AsyncStorage.setItem('@token', response.token)
             // this.props.navigation.navigate('Chatroom');
-        } else {
-
+        } else if (response.status === false) {
+            alert(response.message)
         }
     };
 
@@ -86,7 +86,7 @@ class LoginScreen extends Component {
 
                 <View style={styles.row}>
                     <Text style={styles.label}>Don’t have an account? </Text>
-                    <TouchableOpacity onPress={() => navigation.navigate('RegisterScreen')}>
+                    <TouchableOpacity onPress={() => this.props.navigation.navigate('Register')}>
                         <Text style={styles.link}>Sign up</Text>
                     </TouchableOpacity>
                 </View>
