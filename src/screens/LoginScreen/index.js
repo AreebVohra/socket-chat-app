@@ -6,35 +6,48 @@ import Header from '../../components/Header';
 import Button from '../../components/Button';
 import TextInput from '../../components/TextInput';
 import { theme } from '../../core/theme';
-import { emailValidator, passwordValidator } from '../../core/utils';
+import { phoneValidator, passwordValidator } from '../../core/utils';
+import AuthController from '../../controllers/AuthController';
 
 class LoginScreen extends Component {
     constructor(props) {
         super(props);
+        this.AuthController = new AuthController()
         this.state = {
-            email: { value: '', error: '' },
+            phone: { value: '', error: '' },
             password: { value: '', error: '' },
         };
     }
 
     _onLoginPressed = () => {
-        const { email, password } = this.state;
+        const { phone, password } = this.state;
 
-        const emailError = emailValidator(email.value);
+        const phoneError = phoneValidator(phone.value);
         const passwordError = passwordValidator(password.value);
 
-        if (emailError || passwordError) {
+        if (phoneError || passwordError) {
             this.setState({
-                email: { value: email.value, error: emailError },
+                phone: { value: phone.value, error: phoneError },
                 password: { value: password.value, error: passwordError }
             })
             return;
         }
-        this.props.navigation.navigate('Chatroom');
+
+        const body = {
+            username: "areeb",
+            password: "abc123"
+        }
+        const response = await this.AuthController.LoginAsync(body)
+
+        if (response.status === true) {
+            // this.props.navigation.navigate('Chatroom');
+        } else {
+
+        }
     };
 
     render() {
-        const { email, password } = this.state;
+        const { phone, password } = this.state;
         return (
             <Background>
                 <Logo />
@@ -42,16 +55,15 @@ class LoginScreen extends Component {
                 <Header>Welcome back.</Header>
 
                 <TextInput
-                    label="Email"
+                    label="Phone"
                     returnKeyType="next"
-                    value={email.value}
-                    onChangeText={text => this.setState({ email: { value: text, error: '' } })}
-                    error={!!email.error}
-                    errorText={email.error}
-                    autoCapitalize="none"
-                    autoCompleteType="email"
-                    textContentType="emailAddress"
-                    keyboardType="email-address"
+                    value={phone.value}
+                    onChangeText={text => this.setState({ phone: { value: text, error: '' } })}
+                    error={!!phone.error}
+                    errorText={phone.error}
+                    textContentType="telephoneNumber"
+                    keyboardType="phone-pad"
+                    placeholder="+92123456789"
                 />
 
                 <TextInput
@@ -74,7 +86,7 @@ class LoginScreen extends Component {
 
                 <View style={styles.row}>
                     <Text style={styles.label}>Don’t have an account? </Text>
-                    <TouchableOpacity /*onPress={() => navigation.navigate('RegisterScreen')}*/ >
+                    <TouchableOpacity onPress={() => navigation.navigate('RegisterScreen')}>
                         <Text style={styles.link}>Sign up</Text>
                     </TouchableOpacity>
                 </View>
