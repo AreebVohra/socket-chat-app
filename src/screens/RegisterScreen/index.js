@@ -7,29 +7,29 @@ import Button from '../../components/Button';
 import TextInput from '../../components/TextInput';
 import BackButton from '../../components/BackButton';
 import { theme } from '../../core/theme';
-import { emailValidator, passwordValidator, nameValidator } from '../../core/utils';
+import { passwordValidator, nameValidator, phoneValidator } from '../../core/utils';
 
 export default class RegisterScreen extends Component {
     constructor(props) {
         super(props);
         this.state = {
             name: { value: '', error: '' },
-            email: { value: '', error: '' },
+            phone: { value: '', error: '' },
             password: { value: '', error: '' },
         };
     }
 
     _onSignUpPressed = () => {
-        const { name, email, password } = this.state;
+        const { name, phone, password } = this.state;
 
         const nameError = nameValidator(name.value);
-        const emailError = emailValidator(email.value);
+        const phoneError = phoneValidator(phone.value);
         const passwordError = passwordValidator(password.value);
 
-        if (emailError || passwordError || nameError) {
+        if (nameError || phoneError || passwordError) {
             this.setState({
                 name: { value: name.value, error: nameError },
-                email: { value: email.value, error: emailError },
+                phone: { value: phone.value, error: phoneError },
                 password: { value: password.value, error: passwordError }
             })
             return;
@@ -39,7 +39,7 @@ export default class RegisterScreen extends Component {
     };
 
     render() {
-        const { name, email, password } = this.state;
+        const { name, phone, password } = this.state;
 
         return (
             <Background>
@@ -57,16 +57,15 @@ export default class RegisterScreen extends Component {
                 />
 
                 <TextInput
-                    label="Email"
+                    label="Phone"
                     returnKeyType="next"
-                    value={email.value}
-                    onChangeText={text => this.setState({ email: { value: text, error: '' } })}
-                    error={!!email.error}
-                    errorText={email.error}
-                    autoCapitalize="none"
-                    autoCompleteType="email"
-                    textContentType="emailAddress"
-                    keyboardType="email-address"
+                    value={phone.value}
+                    onChangeText={text => this.setState({ phone: { value: text, error: '' } })}
+                    error={!!phone.error}
+                    errorText={phone.error}
+                    textContentType="telephoneNumber"
+                    keyboardType="phone-pad"
+                    placeholder="+92123456789"
                 />
 
                 <TextInput
