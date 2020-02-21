@@ -7,8 +7,12 @@ import UserScreen from '../screens/UserScreen';
 import SettingScreen from '../screens/SettingScreen';
 import LoginScreen from '../screens/LoginScreen';
 import RegisterScreen from '../screens/RegisterScreen';
+import HomeScreen from '../screens/HomeScreen';
 
 const AppNavigator = createStackNavigator({
+    Home: {
+        screen: HomeScreen
+    },
     Register: {
         screen: RegisterScreen
     },
@@ -31,7 +35,7 @@ const AppNavigator = createStackNavigator({
     defaultNavigationOptions: {
         headerShown: false,
     },
-    initialRouteName: 'Register'
+    initialRouteName: 'Home'
 });
 
 export default createAppContainer(AppNavigator);
