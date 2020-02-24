@@ -1,14 +1,12 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, Clipboard, StyleSheet, Image } from 'react-native';
+import { View, Text, TouchableOpacity, Clipboard, StyleSheet } from 'react-native';
 import io from 'socket.io-client';
-import { GiftedChat, Bubble, Message, MessageImage } from 'react-native-gifted-chat';
+import { GiftedChat, Bubble, Message } from 'react-native-gifted-chat';
 import AsyncStorage from '@react-native-community/async-storage';
 import ReplyToFooter from '../../components/ReplyChatFooter';
 import ChatBubbleWithReply from '../../components/ChatBubbleWithReply';
 import Feather from 'react-native-vector-icons/Feather'
 import ImagePicker from 'react-native-image-picker';
-
-const USER_ID = '@userId';
 
 export default class ChatScreen extends Component {
   constructor(props) {
@@ -36,7 +34,8 @@ export default class ChatScreen extends Component {
 
   componentDidMount = async () => {
     const username = await AsyncStorage.getItem('@username')
-    this.setState({ username })
+    const userId = await AsyncStorage.getItem('@userID')
+    this.setState({ username, userId })
   }
 
   componentWillUnmount() {
@@ -65,18 +64,10 @@ export default class ChatScreen extends Component {
   }
 
   determineUser() {
-    AsyncStorage.getItem(USER_ID)
+    AsyncStorage.getItem('@userID')
       .then((userId) => {
-        if (!userId) {
-          this.socket.emit('userJoined', null);
-          this.socket.on('userJoined', (userId) => {
-            AsyncStorage.setItem(USER_ID, userId);
-            this.setState({ userId });
-          });
-        } else {
-          this.socket.emit('userJoined', userId, this.props.navigation.getParam('selected'));
-          this.setState({ userId });
-        }
+        this.socket.emit('userJoined', userId, this.props.navigation.getParam('selected'));
+        this.setState({ userId });
       })
       .catch((e) => alert(e));
   }
@@ -117,7 +108,7 @@ export default class ChatScreen extends Component {
 
   render() {
     var user = {
-      _id: this.state.userId || -1,
+      _id: this.state.userId,
       name: this.state.username,
       avatar: require('../../assets/user.png'),
     };
