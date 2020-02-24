@@ -12,4 +12,13 @@ export default class AuthController {
             throw error;
         }
     }
+
+    async RegisterAsync(body) {
+        try {
+            const response = await this.AuthService.RegisterAsync(body);
+            return response;
+        } catch (error) {
+            throw error;
+        }
+    }
 }
