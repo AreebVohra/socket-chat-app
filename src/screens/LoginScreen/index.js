@@ -16,8 +16,14 @@ class LoginScreen extends Component {
         this.AuthController = new AuthController()
         this.state = {
             phone: { value: '+923422114890', error: '' },
-            password: { value: 'abc12', error: '' },
+            password: { value: 'abc123', error: '' },
         };
+    }
+
+    async componentDidMount() {
+        const value = await AsyncStorage.getItem('@userID')
+        if (value !== null) this.props.navigation.navigate('Chatroom')
+        else return
     }
 
     _onLoginPressed = async () => {
@@ -36,11 +42,11 @@ class LoginScreen extends Component {
 
         const body = { phone: phone.value, password: password.value }
         const response = await this.AuthController.LoginAsync(body)
-
         if (response.status === true) {
-            AsyncStorage.setItem('@userID', response.id)
+            AsyncStorage.setItem('@userID', response.user._id)
+            AsyncStorage.setItem('@username', response.user.name)
             AsyncStorage.setItem('@token', response.token)
-            // this.props.navigation.navigate('Chatroom');
+            this.props.navigation.navigate('Chatroom');
         } else if (response.status === false) {
             alert(response.message)
         }
