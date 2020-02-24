@@ -11,4 +11,12 @@ export default class AuthService {
             throw error;
         }
     }
+
+    async RegisterAsync(body) {
+        try {
+            return await this.Request.sendPostRequestAsync(EndPoints.register, body);
+        } catch (error) {
+            throw error;
+        }
+    }
 }
