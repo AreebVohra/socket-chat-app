@@ -5,21 +5,23 @@ import Logo from '../../components/Logo';
 import Header from '../../components/Header';
 import Button from '../../components/Button';
 import TextInput from '../../components/TextInput';
-import BackButton from '../../components/BackButton';
 import { theme } from '../../core/theme';
 import { passwordValidator, nameValidator, phoneValidator } from '../../core/utils';
+import AuthController from '../../controllers/AuthController';
+import AsyncStorage from '@react-native-community/async-storage';
 
 export default class RegisterScreen extends Component {
     constructor(props) {
         super(props);
+        this.AuthController = new AuthController()
         this.state = {
-            name: { value: '', error: '' },
-            phone: { value: '', error: '' },
-            password: { value: '', error: '' },
+            name: { value: 'areeb vohra', error: '' },
+            phone: { value: '+923422114890', error: '' },
+            password: { value: 'abc123', error: '' },
         };
     }
 
-    _onSignUpPressed = () => {
+    _onSignUpPressed = async () => {
         const { name, phone, password } = this.state;
 
         const nameError = nameValidator(name.value);
@@ -35,7 +37,16 @@ export default class RegisterScreen extends Component {
             return;
         }
 
-        // navigation.navigate('Dashboard');
+        const body = { name: name.value, phone: phone.value, password: password.value }
+        const response = await this.AuthController.RegisterAsync(body)
+        if (response.status === true) {
+            AsyncStorage.setItem('@userID', response.id)
+            AsyncStorage.setItem('@token', response.token)
+            alert(response.message)
+            // this.props.navigation.navigate('Chatroom');
+        } else if (response.status === false) {
+            alert(response.message)
+        }
     };
 
     render() {
