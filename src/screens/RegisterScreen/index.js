@@ -42,6 +42,7 @@ export default class RegisterScreen extends Component {
         if (response.status === true) {
             AsyncStorage.setItem('@userID', response.user._id)
             AsyncStorage.setItem('@username', response.user.name)
+            AsyncStorage.setItem('@userImage', response.user.userImage)
             AsyncStorage.setItem('@token', response.token)
             alert(response.message)
             this.props.navigation.navigate('Chatroom');
