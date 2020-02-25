@@ -15,6 +15,7 @@ export default class ChatScreen extends Component {
       messages: [],
       userId: null,
       username: '',
+      userImage: '',
       imageSend: null,
       show_reply_to_footer: false,
       reply_msg_id: null,
@@ -35,7 +36,8 @@ export default class ChatScreen extends Component {
   componentDidMount = async () => {
     const username = await AsyncStorage.getItem('@username')
     const userId = await AsyncStorage.getItem('@userID')
-    this.setState({ username, userId })
+    const userImage = await AsyncStorage.getItem('@userImage')
+    this.setState({ username, userId, userImage })
   }
 
   componentWillUnmount() {
@@ -110,7 +112,7 @@ export default class ChatScreen extends Component {
     var user = {
       _id: this.state.userId,
       name: this.state.username,
-      avatar: require('../../assets/user.png'),
+      avatar: 'http://192.168.0.34:3000/uploads/' + this.state.userImage,
     };
     const { messages, reply_to, reply_to_msg } = this.state;
     return (
