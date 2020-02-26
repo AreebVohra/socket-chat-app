@@ -1,9 +1,9 @@
-const BaseURL = "http://192.168.0.34:3000"
+export const BaseURL = 'http://192.168.0.34:3000';
 
-const EndPoints = {
+export const Endpoints = {
     login: `${BaseURL}/api/login`,
     register: `${BaseURL}/api/register`,
-    userImage: `${BaseURL}/upload/`
+    userImage: `${BaseURL}/uploads/`
 }
 
-export default EndPoints;
+// export default Endpoints;
