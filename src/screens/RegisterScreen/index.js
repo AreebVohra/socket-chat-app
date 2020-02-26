@@ -40,10 +40,12 @@ export default class RegisterScreen extends Component {
         const body = { name: name.value, phone: phone.value, password: password.value }
         const response = await this.AuthController.RegisterAsync(body)
         if (response.status === true) {
-            AsyncStorage.setItem('@userID', response.user._id)
-            AsyncStorage.setItem('@username', response.user.name)
-            AsyncStorage.setItem('@userImage', response.user.userImage)
-            AsyncStorage.setItem('@token', response.token)
+            AsyncStorage.multiSet([
+                ['@userID', response.user._id],
+                ['@username', response.user.name],
+                ['@userImage', response.user.userImage],
+                ['@token', response.token]
+            ])
             alert(response.message)
             this.props.navigation.navigate('Chatroom');
         } else if (response.status === false) {
