@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import io from 'socket.io-client';
 import { Checkbox } from 'react-native-paper';
+import { BaseURL } from '../../constants/Endpoints';
 
 export default class ChatRoomScreen extends Component {
   constructor(props) {
@@ -25,7 +26,7 @@ export default class ChatRoomScreen extends Component {
       room1: true
     };
 
-    this.socket = io('http://192.168.0.34:3000');
+    this.socket = io(BaseURL);
     this.onRecieveRooms = this.onRecieveRooms.bind(this)
     this.getRooms = this.getRooms.bind(this);
     this.getRooms();
