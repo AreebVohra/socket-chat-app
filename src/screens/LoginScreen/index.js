@@ -43,9 +43,13 @@ class LoginScreen extends Component {
         const body = { phone: phone.value, password: password.value }
         const response = await this.AuthController.LoginAsync(body)
         if (response.status === true) {
-            AsyncStorage.setItem('@userID', response.user._id)
-            AsyncStorage.setItem('@username', response.user.name)
-            AsyncStorage.setItem('@token', response.token)
+            AsyncStorage.multiSet([
+                ['@userID', response.user._id],
+                ['@username', response.user.name],
+                ['@userImage', response.user.userImage],
+                ['@token', response.token]
+            ])
+            alert(response.message)
             this.props.navigation.navigate('Chatroom');
         } else if (response.status === false) {
             alert(response.message)
