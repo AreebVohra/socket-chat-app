@@ -1,12 +1,12 @@
 import Request from "../network/request";
-import EndPoints from "../constants/Endpoints";
+import { Endpoints } from "../constants/Endpoints";
 
 export default class AuthService {
     Request = new Request();
 
     async LoginAsync(body) {
         try {
-            return await this.Request.sendPostRequestAsync(EndPoints.login, body);
+            return await this.Request.sendPostRequestAsync(Endpoints.login, body);
         } catch (error) {
             throw error;
         }
@@ -14,7 +14,7 @@ export default class AuthService {
 
     async RegisterAsync(body) {
         try {
-            return await this.Request.sendPostRequestAsync(EndPoints.register, body);
+            return await this.Request.sendPostRequestAsync(Endpoints.register, body);
         } catch (error) {
             throw error;
         }
