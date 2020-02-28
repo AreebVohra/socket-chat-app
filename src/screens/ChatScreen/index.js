@@ -1,14 +1,17 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, Clipboard, StyleSheet } from 'react-native';
-import io from 'socket.io-client';
-import { GiftedChat, Bubble, Message } from 'react-native-gifted-chat';
+import { TouchableOpacity, Clipboard, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
+
 import ReplyToFooter from '../../components/ReplyChatFooter';
+import ImageToFooter from '../../components/ImageChatFooter';
 import ChatBubbleWithReply from '../../components/ChatBubbleWithReply';
+import { Endpoints, BaseURL } from '../../constants/Endpoints';
+
+import io from 'socket.io-client';
 import Feather from 'react-native-vector-icons/Feather'
 import ImagePicker from 'react-native-image-picker';
-import { Endpoints, BaseURL } from '../../constants/Endpoints';
-import ImageToFooter from '../../components/ImageChatFooter';
+import { GiftedChat, Bubble, Message, MessageText } from 'react-native-gifted-chat';
+
 
 export default class ChatScreen extends Component {
   constructor(props) {
@@ -18,12 +21,14 @@ export default class ChatScreen extends Component {
       userId: null,
       username: '',
       userImage: '',
-      imageSend: null,
+      image: null,
       show_reply_to_footer: false,
       show_image_to_footer: false,
-      reply_msg_id: null,
-      reply_to: null,
-      reply_to_msg: null
+      reply: {
+        reply_msg_id: null,
+        reply_to: null,
+        reply_to_msg: null
+      },
     };
 
     this.determineUser = this.determineUser.bind(this);
@@ -54,13 +59,12 @@ export default class ChatScreen extends Component {
   uploadImage = () => {
     const options = {
       title: 'Select Option',
-      // takePhotoButtonTitle: 'Open Camera',
-      // chooseFromLibraryButtonTitle: 'Open Gallery',
+      maxHeight: 2000,
       // customButtons: [{ name: 'fb', title: 'Choose Photo from Facebook' }],
-      storageOptions: {
-        skipBackup: true,
-        path: 'images',
-      },
+      // storageOptions: {
+      //   skipBackup: true,
+      //   path: 'images',
+      // },
     };
 
     ImagePicker.showImagePicker(options, (response) => {
@@ -70,7 +74,7 @@ export default class ChatScreen extends Component {
         console.log('ImagePicker Error: ', response.error);
       } else {
         const source = 'data:image/jpeg;base64,' + response.data;
-        this.setState({ imageSend: source, show_image_to_footer: true });
+        this.setState({ image: source, show_image_to_footer: true });
       }
     });
   }
@@ -87,12 +91,18 @@ export default class ChatScreen extends Component {
   onReceivedMessage(messages) { this._storeMessages(messages); }
 
   onSend(messages = []) {
-    const { reply_msg_id, reply_to, reply_to_msg, imageSend } = this.state;
-    messages[0].reply = { reply_msg_id, reply_to, reply_to_msg };
-    messages[0].image = imageSend;
-    this.socket.emit('message', messages[0], this.props.navigation.getParam('selected'));
-    this._storeMessages(messages);
+    const { reply, image } = this.state;
+
+    const new_msg = {
+      ...messages[0],
+      reply,
+      image
+    }
+
+    this.socket.emit('message', new_msg, this.props.navigation.getParam('selected'));
+    this._storeMessages(new_msg);
     this.closeReplyToFooter();
+    this.closeImageToFooter();
   }
 
   _storeMessages(messages) {
@@ -122,9 +132,10 @@ export default class ChatScreen extends Component {
     var user = {
       _id: this.state.userId,
       name: this.state.username,
-      avatar: Endpoints.userImage + this.state.userImage,
+      avatar: Endpoints.userImage + this.state.userImage
     };
-    const { messages, reply_msg_id, reply_to, reply_to_msg } = this.state;
+    const { messages } = this.state;
+
     return (
       <GiftedChat
         messages={messages}
@@ -133,7 +144,6 @@ export default class ChatScreen extends Component {
         renderUsernameOnMessage={true}
         timeTextStyle={{ left: { color: 'white' } }}
         scrollToBottom={true}
-        renderBubble={this.renderBubble}
         renderChatFooter={this.renderChatFooter}
         onLongPress={this.onLongPress}
         renderActions={() => (
@@ -141,7 +151,7 @@ export default class ChatScreen extends Component {
             <Feather name='image' size={25} color='#0084ff' />
           </TouchableOpacity>
         )}
-      renderMessage={this.renderMessage}
+        renderMessage={this.renderMessage}
       />
     );
   }
@@ -156,21 +166,20 @@ export default class ChatScreen extends Component {
 
 
   renderMessage = (msg) => {
-    const { reply_to, reply_to_msg } = this.state;
-    const renderBubble = (reply_to && reply_to_msg) ? this.renderPreview : null;
+    const { reply_msg_id, reply_to, reply_to_msg } = msg.currentMessage.reply;
+    const renderBubble = (reply_msg_id && reply_to && reply_to_msg) ? this.renderPreview : this.renderBubble;
 
     let modified_msg = {
       ...msg,
       renderBubble
     };
 
-    return <Message {...msg} />
+    return <Message {...modified_msg} />
   }
 
   renderPreview = (bubbleProps) => {
-    const { reply_to, reply_to_msg } = this.state;
     return (
-      <ChatBubbleWithReply reply_to={reply_to} reply_to_msg={reply_to_msg} {...bubbleProps} />
+      <ChatBubbleWithReply {...bubbleProps} />
     );
   }
 
@@ -187,9 +196,11 @@ export default class ChatScreen extends Component {
           break;
         case 1:
           this.setState({
-            reply_msg_id: message._id,
-            reply_to: message.user.name,
-            reply_to_msg: message.text,
+            reply: {
+              reply_msg_id: message._id,
+              reply_to: message.user.name,
+              reply_to_msg: message.text
+            },
             show_reply_to_footer: true,
           });
           break;
@@ -199,18 +210,18 @@ export default class ChatScreen extends Component {
   }
 
   renderChatFooter = () => {
-    const { show_image_to_footer, show_reply_to_footer, reply_to, reply_to_msg, imageSend } = this.state;
+    const { show_image_to_footer, show_reply_to_footer, reply, image } = this.state;
     if (show_reply_to_footer) { // only render if it's set to visible
       return (
         <ReplyToFooter
-          reply_to={reply_to}
-          reply_to_msg={reply_to_msg}
+          reply_to={reply.reply_to}
+          reply_to_msg={reply.reply_to_msg}
           closeFooter={this.closeReplyToFooter} />
       );
     } else if (show_image_to_footer) {
       return (
         <ImageToFooter
-          imageSend={imageSend}
+          imageSend={image}
           sendButtom={this.closeImageToFooter}
           closeFooter={this.closeImageToFooter} />
       );
@@ -220,16 +231,18 @@ export default class ChatScreen extends Component {
   closeReplyToFooter = () => {
     this.setState({
       show_reply_to_footer: false,
-      reply_to: null,
-      reply_to_msg: null,
-      imageSend: null
+      reply: {
+        reply_msg_id: null,
+        reply_to: null,
+        reply_to_msg: null
+      }
     });
   }
 
   closeImageToFooter = () => {
     this.setState({
       show_image_to_footer: false,
-      imageSend: null
+      image: null
     });
   }
 }
