@@ -4,9 +4,9 @@ import { MessageText, MessageImage, Time } from 'react-native-gifted-chat';
 
 const ChatBubbleWithReply = (props) => {
   const { position, children, currentMessage } = props;
-  const reply_header = (position == 'right') ? `you replied to ${props.reply_to}` : `${props.user.name} replied to ${props.reply_to}`;
-  const reply_to_color = (position == 'right') ? '#d4d4d4' : '#a0a0a0';
-  const reply_to_msg_color = (position == 'right') ? '#eee' : '#616161';
+  const reply_header = (position == 'right') ? `you replied to ${currentMessage.reply.reply_to}` : `${currentMessage.user.name} replied to you`;
+  const reply_to_color = (position == 'right') ? '#d4d4d4' : '#fff';
+  const reply_to_msg_color = (position == 'right') ? '#eee' : '#fff';
 
   return (
     <View style={styles[`${position}_container`]}>
@@ -14,10 +14,10 @@ const ChatBubbleWithReply = (props) => {
         <View style={styles.reply_to_container}>
           <Text style={[styles.reply_to, { color: reply_to_color }]}>{reply_header}:</Text>
           <View style={styles.reply_to_msg_container}>
-            <Text style={[styles.reply_to_msg, { color: reply_to_msg_color }]}>"{props.reply_to_msg}"</Text>
+            <Text style={[styles.reply_to_msg, { color: reply_to_msg_color }]}>"{currentMessage.reply.reply_to_msg}"</Text>
           </View>
         </View>
-        <MessageText {...props} />
+        <MessageText textStyle={{ left: { color: 'white' } }} {...props} />
         {
           currentMessage.image &&
           <MessageImage {...props} />
@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
   },
   left_wrapper: {
     borderRadius: 15,
-    backgroundColor: '#f0f0f0',
+    backgroundColor: '#2ecc71',
     marginRight: 60,
     minHeight: 20,
     justifyContent: 'flex-end',
@@ -58,11 +58,12 @@ const styles = StyleSheet.create({
     marginTop: 5
   },
   reply_to: {
-    fontSize: 11
+    fontSize: 11,
+    marginHorizontal: 5,
   },
   reply_to_msg_container: {
-    marginRight: 10,
-    marginLeft: 10,
+    marginHorizontal: 5,
+    padding: 5,
     marginTop: 3
   },
   reply_to_msg: {
