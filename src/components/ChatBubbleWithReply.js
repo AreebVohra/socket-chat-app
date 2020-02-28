@@ -5,8 +5,8 @@ import { MessageText, MessageImage, Time } from 'react-native-gifted-chat';
 const ChatBubbleWithReply = (props) => {
   const { position, children, currentMessage } = props;
   const reply_header = (position == 'right') ? `you replied to ${currentMessage.reply.reply_to}` : `${currentMessage.user.name} replied to you`;
-  const reply_to_color = (position == 'right') ? '#d4d4d4' : '#fff';
-  const reply_to_msg_color = (position == 'right') ? '#eee' : '#fff';
+  const reply_to_color = (position == 'right') ? '#303030' : '#303030';
+  const reply_to_msg_color = (position == 'right') ? '#303030' : '#303030';
 
   return (
     <View style={styles[`${position}_container`]}>
@@ -17,7 +17,7 @@ const ChatBubbleWithReply = (props) => {
             <Text style={[styles.reply_to_msg, { color: reply_to_msg_color }]}>"{currentMessage.reply.reply_to_msg}"</Text>
           </View>
         </View>
-        <MessageText textStyle={{ left: { color: 'white' } }} {...props} />
+        <MessageText textStyle={{ left: { color: '#303030' }, right: { color: '#303030' } }} {...props} />
         {
           currentMessage.image &&
           <MessageImage {...props} />
@@ -35,8 +35,8 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
   },
   left_wrapper: {
-    borderRadius: 15,
-    backgroundColor: '#2ecc71',
+    borderRadius: 8,
+    backgroundColor: '#ffffff',
     marginRight: 60,
     minHeight: 20,
     justifyContent: 'flex-end',
@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
   },
   right_wrapper: {
     borderRadius: 15,
-    backgroundColor: '#0084ff',
+    backgroundColor: '#dcf8c6',
     marginLeft: 60,
     minHeight: 20,
     justifyContent: 'flex-end',
