@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { TouchableOpacity, Clipboard, StyleSheet } from 'react-native';
+import { TouchableOpacity, Clipboard, StyleSheet, ImageBackground, Dimensions } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 
 import ReplyToFooter from '../../components/ReplyChatFooter';
@@ -12,6 +12,7 @@ import Feather from 'react-native-vector-icons/Feather'
 import ImagePicker from 'react-native-image-picker';
 import { GiftedChat, Bubble, Message, MessageText } from 'react-native-gifted-chat';
 
+const { width, height } = Dimensions.get('window');
 
 export default class ChatScreen extends Component {
   constructor(props) {
@@ -118,12 +119,20 @@ export default class ChatScreen extends Component {
       <Bubble
         {...props}
         textStyle={{
-          right: { color: 'white' },
-          left: { color: 'white' },
+          right: { color: '#303030' },
+          left: { color: '#303030' },
         }}
         wrapperStyle={{
-          left: { backgroundColor: '#2ecc71' }
+          left: {
+            backgroundColor: '#ffffff',
+            borderRadius: 8
+          },
+          right: {
+            backgroundColor: '#dcf8c6',
+            borderRadius: 8
+          }
         }}
+
       />
     )
   }
@@ -135,24 +144,26 @@ export default class ChatScreen extends Component {
       avatar: Endpoints.userImage + this.state.userImage
     };
     const { messages } = this.state;
-
     return (
-      <GiftedChat
-        messages={messages}
-        onSend={this.onSend}
-        user={user}
-        renderUsernameOnMessage={true}
-        timeTextStyle={{ left: { color: 'white' } }}
-        scrollToBottom={true}
-        renderChatFooter={this.renderChatFooter}
-        onLongPress={this.onLongPress}
-        renderActions={() => (
-          <TouchableOpacity style={styles.uploadImage} onPress={this.uploadImage}>
-            <Feather name='image' size={25} color='#0084ff' />
-          </TouchableOpacity>
-        )}
-        renderMessage={this.renderMessage}
-      />
+      <ImageBackground resizeMode="cover" style={{ width, height: '100%' }} source={require('../../assets/background.png')}>
+        <GiftedChat
+          // messagesContainerStyle={{ backgroundColor: '#e5ddd5' }}
+          messages={messages}
+          onSend={this.onSend}
+          user={user}
+          renderUsernameOnMessage={true}
+          timeTextStyle={{ left: { color: '#a0887f' }, right: { color: '#a0887f' } }}
+          scrollToBottom={true}
+          renderChatFooter={this.renderChatFooter}
+          onLongPress={this.onLongPress}
+          renderActions={() => (
+            <TouchableOpacity style={styles.uploadImage} onPress={this.uploadImage}>
+              <Feather name='image' size={25} color='#0084ff' />
+            </TouchableOpacity>
+          )}
+          renderMessage={this.renderMessage}
+        />
+      </ImageBackground>
     );
   }
 
