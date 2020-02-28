@@ -10,7 +10,7 @@ import { Endpoints, BaseURL } from '../../constants/Endpoints';
 import io from 'socket.io-client';
 import Feather from 'react-native-vector-icons/Feather'
 import ImagePicker from 'react-native-image-picker';
-import { GiftedChat, Bubble, Message, MessageText } from 'react-native-gifted-chat';
+import { GiftedChat, Bubble, Message, Day } from 'react-native-gifted-chat';
 
 const { width, height } = Dimensions.get('window');
 
@@ -145,9 +145,11 @@ export default class ChatScreen extends Component {
     };
     const { messages } = this.state;
     return (
-      <ImageBackground resizeMode="cover" style={{ width, height: '100%' }} source={require('../../assets/background.png')}>
+      <ImageBackground
+        resizeMode="cover"
+        style={{ width, height: '100%' }}
+        source={require('../../assets/background.png')}>
         <GiftedChat
-          // messagesContainerStyle={{ backgroundColor: '#e5ddd5' }}
           messages={messages}
           onSend={this.onSend}
           user={user}
@@ -162,9 +164,26 @@ export default class ChatScreen extends Component {
             </TouchableOpacity>
           )}
           renderMessage={this.renderMessage}
+          renderDay={this.renderDay}
         />
       </ImageBackground>
     );
+  }
+
+  renderDay(props) {
+    return (
+      <Day
+        {...props}
+        textStyle={{ color: 'black' }}
+        containerStyle={{
+          backgroundColor: '#e1f3fb',
+          padding: 5,
+          width: '30%',
+          alignSelf: 'center',
+          borderRadius: 8
+        }}
+      />
+    )
   }
 
   getColor(username) {
