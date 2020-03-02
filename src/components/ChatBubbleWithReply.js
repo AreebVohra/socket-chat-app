@@ -1,12 +1,13 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { MessageText, MessageImage, Time } from 'react-native-gifted-chat';
+import { MessageText, MessageImage, Time, Avatar } from 'react-native-gifted-chat';
 
 const ChatBubbleWithReply = (props) => {
   const { position, children, currentMessage } = props;
   const reply_header = (position == 'right') ? `you replied to ${currentMessage.reply.reply_to}` : `${currentMessage.user.name} replied to you`;
   const reply_to_color = (position == 'right') ? '#303030' : '#303030';
   const reply_to_msg_color = (position == 'right') ? '#303030' : '#303030';
+  const backgroundColor = (position == 'right') ? '#cfe9ba' : '#f0f0f0'
 
   return (
     <View style={styles[`${position}_container`]}>
@@ -14,7 +15,7 @@ const ChatBubbleWithReply = (props) => {
         <View style={styles.reply_to_container}>
           <Text style={[styles.reply_to, { color: reply_to_color }]}>{reply_header}:</Text>
           <View style={styles.reply_to_msg_container}>
-            <Text style={[styles.reply_to_msg, { color: reply_to_msg_color }]}>"{currentMessage.reply.reply_to_msg}"</Text>
+            <Text style={[styles.reply_to_msg, { color: reply_to_msg_color, backgroundColor }]}>"{currentMessage.reply.reply_to_msg}"</Text>
           </View>
         </View>
         <MessageText textStyle={{ left: { color: '#303030' }, right: { color: '#303030' } }} {...props} />
@@ -23,7 +24,18 @@ const ChatBubbleWithReply = (props) => {
           <MessageImage {...props} />
         }
         {children}
-        <Time {...props} />
+        <View style={styles.usernameContainer}>
+          {
+            position == 'left'
+              ? <View style={styles.usernameView}>
+                <Text style={[styles.username, props.usernameStyle]}>
+                  ~ {currentMessage.user.name}
+                </Text>
+              </View>
+              : <View style={styles.usernameView} />
+          }
+          <Time {...props} />
+        </View>
       </View>
     </View>
   );
@@ -68,8 +80,25 @@ const styles = StyleSheet.create({
   },
   reply_to_msg: {
     fontStyle: 'italic',
-    fontSize: 14
-  }
+    fontSize: 14,
+    padding: 5,
+    borderRadius: 5,
+  },
+  usernameContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  usernameView: {
+    marginHorizontal: 10,
+  },
+  username: {
+    top: -3,
+    bottom: 0,
+    left: 0,
+    fontSize: 12,
+    backgroundColor: 'transparent',
+    color: '#aaa',
+  },
 });
 
 export default ChatBubbleWithReply;
