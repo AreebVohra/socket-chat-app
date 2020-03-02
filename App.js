@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StatusBar } from 'react-native';
+import { StatusBar, View } from 'react-native';
 import AppNavigator from './src/navigation/AppNavigator';
 
 export default class App extends Component {
@@ -10,9 +10,11 @@ export default class App extends Component {
   }
 
   render() {
-    StatusBar.setHidden(true)
     return (
-      <AppNavigator />
+      <View style={{ width: '100%', height: '100%' }}>
+        <StatusBar backgroundColor="#034f4a" />
+        <AppNavigator />
+      </View>
     );
   }
 }

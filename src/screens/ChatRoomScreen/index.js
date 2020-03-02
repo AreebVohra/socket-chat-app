@@ -33,9 +33,9 @@ export default class ChatRoomScreen extends Component {
     this.onRecieveRooms();
   }
 
-  chatRoom = (chatID) => {
+  chatRoom = (chatID, roomName) => {
     this.socket.emit('chatSelected', chatID);
-    this.props.navigation.navigate('Chat', { selected: chatID })
+    this.props.navigation.navigate('Chat', { selected: chatID, roomName })
   }
 
   onRecieveRooms() {
@@ -52,10 +52,6 @@ export default class ChatRoomScreen extends Component {
     this.socket.removeEventListener('roomsAvailable')
   }
 
-  pushRoom = (roomID) => {
-    this.state.selectedRoomID.push(roomID)
-  }
-
   render() {
     const { room1 } = this.state
     return (
@@ -65,7 +61,7 @@ export default class ChatRoomScreen extends Component {
             <View style={{ flexDirection: 'row' }} key={index}>
               <TouchableOpacity
                 style={styles.roomButton}
-                onPress={() => this.chatRoom([v.chat_id])}
+                onPress={() => this.chatRoom([v.chat_id], v.name)}
               >
                 <Text style={{ fontSize: 18 }}>{v.name}</Text>
               </TouchableOpacity>
