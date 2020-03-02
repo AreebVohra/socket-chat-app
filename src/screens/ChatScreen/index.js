@@ -11,6 +11,7 @@ import io from 'socket.io-client';
 import Feather from 'react-native-vector-icons/Feather'
 import ImagePicker from 'react-native-image-picker';
 import { GiftedChat, Bubble, Message, Day } from 'react-native-gifted-chat';
+import AppBar from '../../components/AppBar';
 
 const { width, height } = Dimensions.get('window');
 
@@ -137,6 +138,8 @@ export default class ChatScreen extends Component {
     )
   }
 
+  _action = () => { }
+
   render() {
     var user = {
       _id: this.state.userId,
@@ -149,25 +152,39 @@ export default class ChatScreen extends Component {
         resizeMode="cover"
         style={{ width, height: '100%' }}
         source={require('../../assets/background.png')}>
+        <AppBar
+          title={this.props.navigation.getParam('roomName')}
+          goBack={() => this.props.navigation.goBack()}
+          actions={
+            [
+              { icon: 'reply', onPress: this._action },
+              { icon: 'dots-vertical', onPress: this._action }
+            ]
+          }
+        />
         <GiftedChat
           messages={messages}
           onSend={this.onSend}
           user={user}
           renderUsernameOnMessage={true}
-          timeTextStyle={{ left: { color: '#a0887f' }, right: { color: '#a0887f' } }}
+          timeTextStyle={{ left: { color: '#aaa' }, right: { color: '#aaa' } }}
           scrollToBottom={true}
           renderChatFooter={this.renderChatFooter}
           onLongPress={this.onLongPress}
-          renderActions={() => (
-            <TouchableOpacity style={styles.uploadImage} onPress={this.uploadImage}>
-              <Feather name='image' size={25} color='#0084ff' />
-            </TouchableOpacity>
-          )}
+          renderActions={this.renderActions}
           renderMessage={this.renderMessage}
           renderDay={this.renderDay}
         />
       </ImageBackground>
     );
+  }
+
+  renderActions = () => {
+    return (
+      <TouchableOpacity style={styles.uploadImage} onPress={this.uploadImage}>
+        <Feather name='image' size={25} color='#0084ff' />
+      </TouchableOpacity>
+    )
   }
 
   renderDay(props) {
@@ -177,8 +194,7 @@ export default class ChatScreen extends Component {
         textStyle={{ color: 'black' }}
         containerStyle={{
           backgroundColor: '#e1f3fb',
-          padding: 5,
-          width: '30%',
+          padding: 5, width: '30%',
           alignSelf: 'center',
           borderRadius: 8
         }}
