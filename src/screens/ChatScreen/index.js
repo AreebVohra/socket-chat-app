@@ -119,19 +119,10 @@ export default class ChatScreen extends Component {
     return (
       <Bubble
         {...props}
-        textStyle={{
-          right: { color: '#303030' },
-          left: { color: '#303030' },
-        }}
+        textStyle={{ right: { color: '#303030' }, left: { color: '#303030' } }}
         wrapperStyle={{
-          left: {
-            backgroundColor: '#ffffff',
-            borderRadius: 8
-          },
-          right: {
-            backgroundColor: '#dcf8c6',
-            borderRadius: 8
-          }
+          left: { backgroundColor: '#ffffff', borderRadius: 8 },
+          right: { backgroundColor: '#dcf8c6', borderRadius: 8 }
         }}
 
       />
