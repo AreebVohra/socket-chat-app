@@ -6,30 +6,17 @@ import ReplyToFooter from '../../components/ReplyChatFooter';
 import ImageToFooter from '../../components/ImageChatFooter';
 import ChatBubbleWithReply from '../../components/ChatBubbleWithReply';
 import { Endpoints, BaseURL } from '../../constants/Endpoints';
+import AppBar from '../../components/AppBar';
 
 import io from 'socket.io-client';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import Feather from 'react-native-vector-icons/Feather'
 import ImagePicker from 'react-native-image-picker';
 import { GiftedChat, Bubble, Message, Day } from 'react-native-gifted-chat';
-import { HeaderButtons, HeaderButton, Item } from 'react-navigation-header-buttons';
-
-const IoniconsHeaderButton = passMeFurther => (
-  <HeaderButton {...passMeFurther} IconComponent={MaterialCommunityIcons} iconSize={20} color="white" />
-);
+import { Provider } from 'react-native-paper';
 
 const { width, height } = Dimensions.get('window');
 
 export default class ChatScreen extends Component {
-  static navigationOptions = {
-    headerRight: () => (
-      <HeaderButtons HeaderButtonComponent={IoniconsHeaderButton}>
-        <Item title="reply" iconName="reply" />
-        <Item title="dots-vertical" iconName="dots-vertical" />
-      </HeaderButtons>
-    ),
-  };
-
   constructor(props) {
     super(props);
     this.state = {
@@ -45,6 +32,7 @@ export default class ChatScreen extends Component {
         reply_to: null,
         reply_to_msg: null
       },
+      menuVisible: false,
     };
 
     this.determineUser = this.determineUser.bind(this);
@@ -145,6 +133,10 @@ export default class ChatScreen extends Component {
 
   _action = () => { }
 
+  _openMenu = () => this.setState({ menuVisible: true });
+
+  _closeMenu = () => this.setState({ menuVisible: false });
+
   render() {
     var user = {
       _id: this.state.userId,
@@ -153,24 +145,39 @@ export default class ChatScreen extends Component {
     };
     const { messages } = this.state;
     return (
-      <ImageBackground
-        resizeMode="cover"
-        style={{ width, height: '100%' }}
-        source={require('../../assets/background.png')}>
-        <GiftedChat
-          messages={messages}
-          onSend={this.onSend}
-          user={user}
-          renderUsernameOnMessage={true}
-          timeTextStyle={{ left: { color: '#aaa' }, right: { color: '#aaa' } }}
-          scrollToBottom={true}
-          renderChatFooter={this.renderChatFooter}
-          onLongPress={this.onLongPress}
-          renderActions={this.renderActions}
-          renderMessage={this.renderMessage}
-          renderDay={this.renderDay}
-        />
-      </ImageBackground>
+      <Provider>
+        <ImageBackground
+          resizeMode="cover"
+          style={{ width, height: '100%' }}
+          source={require('../../assets/background.png')}>
+          <AppBar
+            title={this.props.navigation.getParam('roomName')}
+            goBack={() => this.props.navigation.goBack()}
+            logout={this._action}
+            menuVisible={this.state.menuVisible}
+            onDismiss={this._closeMenu}
+            openMenu={this._openMenu}
+            actions={
+              [
+                { icon: 'reply', onPress: this._action },
+              ]
+            }
+          />
+          <GiftedChat
+            messages={messages}
+            onSend={this.onSend}
+            user={user}
+            renderUsernameOnMessage={true}
+            timeTextStyle={{ left: { color: '#aaa' }, right: { color: '#aaa' } }}
+            scrollToBottom={true}
+            renderChatFooter={this.renderChatFooter}
+            onLongPress={this.onLongPress}
+            renderActions={this.renderActions}
+            renderMessage={this.renderMessage}
+            renderDay={this.renderDay}
+          />
+        </ImageBackground>
+      </Provider>
     );
   }
 
