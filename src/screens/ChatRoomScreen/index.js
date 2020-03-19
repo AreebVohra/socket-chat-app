@@ -2,18 +2,16 @@ import React, { Component } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
 
 import { BaseURL } from '../../constants/Endpoints';
-import AppBar from '../../components/AppBar';
 
 import io from 'socket.io-client';
-import AsyncStorage from '@react-native-community/async-storage';
 import { Provider } from 'react-native-paper';
+import AppBar from '../../components/AppBar';
 
 export default class ChatRoomScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
       chatRoom: [],
-      menuVisible: false,
     };
 
     this.socket = io(BaseURL);
@@ -36,25 +34,11 @@ export default class ChatRoomScreen extends Component {
     })
   }
 
-  _logout = () => {
-    // AsyncStorage.multiSet([
-    //     ['@userID', response.user._id],
-    //     ['@username', response.user.name],
-    //     ['@userImage', response.user.userImage],
-    //     ['@token', response.token]
-    // ])
-    alert('Logout')
-  }
-
   getRooms() { this.socket.emit('roomsAvailable') }
 
   componentWillUnmount() {
     this.socket.removeEventListener('roomsAvailable')
   }
-
-  _openMenu = () => this.setState({ menuVisible: true });
-
-  _closeMenu = () => this.setState({ menuVisible: false });
 
   render() {
     const allRooms = this.state.chatRoom.map(v => v.chat_id)
@@ -63,12 +47,9 @@ export default class ChatRoomScreen extends Component {
         <Provider>
           <AppBar
             title={this.props.navigation.state.routeName}
-            menuVisible={this.state.menuVisible}
             actions={null}
-            openMenu={this._openMenu}
-            onDismiss={this._closeMenu}
             goBack={null}
-            logout={this._logout}
+            {...this.props}
           />
           <FlatList
             style={{ width: '100%' }}

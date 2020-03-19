@@ -32,7 +32,6 @@ export default class ChatScreen extends Component {
         reply_to: null,
         reply_to_msg: null
       },
-      menuVisible: false,
     };
 
     this.determineUser = this.determineUser.bind(this);
@@ -133,10 +132,6 @@ export default class ChatScreen extends Component {
 
   _action = () => { }
 
-  _openMenu = () => this.setState({ menuVisible: true });
-
-  _closeMenu = () => this.setState({ menuVisible: false });
-
   render() {
     var user = {
       _id: this.state.userId,
@@ -153,10 +148,6 @@ export default class ChatScreen extends Component {
           <AppBar
             title={this.props.navigation.getParam('roomName')}
             goBack={() => this.props.navigation.goBack()}
-            logout={this._action}
-            menuVisible={this.state.menuVisible}
-            onDismiss={this._closeMenu}
-            openMenu={this._openMenu}
             actions={
               [
                 { icon: 'reply', onPress: this._action },
