@@ -10,17 +10,11 @@ import RegisterScreen from '../screens/RegisterScreen';
 const AppNavigator = createStackNavigator({
     Login: {
         screen: LoginScreen,
-        navigationOptions: {
-            headerShown: false
-        }
     },
     Register: {
         screen: RegisterScreen,
-        navigationOptions: {
-            headerShown: false
-        }
     },
-    Chatroom: {
+    Chatrooms: {
         screen: ChatRoomScreen
     },
     Chat: {
@@ -37,7 +31,8 @@ const AppNavigator = createStackNavigator({
         headerTintColor: '#ffffff',
         headerStyle: {
             backgroundColor: '#005f51',
-        }
+        },
+        headerShown: false
     },
 });
 
