@@ -9,23 +9,35 @@ import RegisterScreen from '../screens/RegisterScreen';
 
 const AppNavigator = createStackNavigator({
     Login: {
-        screen: LoginScreen
+        screen: LoginScreen,
+        navigationOptions: {
+            headerShown: false
+        }
     },
     Register: {
-        screen: RegisterScreen
+        screen: RegisterScreen,
+        navigationOptions: {
+            headerShown: false
+        }
     },
     Chatroom: {
         screen: ChatRoomScreen
     },
     Chat: {
         screen: ChatScreen,
+        navigationOptions: ({ navigation }) => ({
+            title: navigation.getParam('roomName'),
+        }),
     },
     Setting: {
         screen: SettingScreen
     }
 }, {
     defaultNavigationOptions: {
-        headerShown: false,
+        headerTintColor: '#ffffff',
+        headerStyle: {
+            backgroundColor: '#005f51',
+        }
     },
 });
 
