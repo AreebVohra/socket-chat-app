@@ -6,6 +6,7 @@ import ChatRoomScreen from '../screens/ChatRoomScreen';
 import SettingScreen from '../screens/SettingScreen';
 import LoginScreen from '../screens/LoginScreen';
 import RegisterScreen from '../screens/RegisterScreen';
+import ModeratorScreen from '../screens/ModeratorScreen';
 
 const AppNavigator = createStackNavigator({
     Login: {
@@ -16,6 +17,9 @@ const AppNavigator = createStackNavigator({
     },
     Chatrooms: {
         screen: ChatRoomScreen
+    },
+    Moderator: {
+        screen: ModeratorScreen
     },
     Chat: {
         screen: ChatScreen,
