@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
 import io from 'socket.io-client';
 import { Checkbox } from 'react-native-paper';
 import { BaseURL } from '../../constants/Endpoints';
@@ -53,21 +53,23 @@ export default class ChatRoomScreen extends Component {
   }
 
   render() {
-    const { room1 } = this.state
     return (
       <View style={styles.container}>
-        {
-          this.state.chatRoom.map((v, index) =>
-            <View style={{ flexDirection: 'row' }} key={index}>
+        <FlatList
+          style={{ width: '100%' }}
+          data={this.state.chatRoom}
+          keyExtractor={item => item._id}
+          renderItem={({ item }) => (
+            <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
               <TouchableOpacity
                 style={styles.roomButton}
-                onPress={() => this.chatRoom([v.chat_id], v.name)}
+                onPress={() => this.chatRoom([item.chat_id], item.name)}
               >
-                <Text style={{ fontSize: 18 }}>{v.name}</Text>
+                <Text style={{ fontSize: 18 }}>{item.name}</Text>
               </TouchableOpacity>
             </View>
-          )
-        }
+          )}
+        />
         <TouchableOpacity
           style={styles.roomButton}
           onPress={() => this.chatRoom([1, 2, 3])}
