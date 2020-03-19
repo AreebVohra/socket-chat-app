@@ -22,7 +22,7 @@ class LoginScreen extends Component {
 
     async componentDidMount() {
         const value = await AsyncStorage.getItem('@userID')
-        if (value !== null) this.props.navigation.navigate('Chatroom')
+        if (value !== null) this.props.navigation.replace('Chatrooms')
         else return
     }
 
