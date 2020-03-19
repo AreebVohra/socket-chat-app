@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { TouchableOpacity, StyleSheet, Text, View } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
+
 import Background from '../../components/Background';
 import Logo from '../../components/Logo';
 import Header from '../../components/Header';
@@ -8,21 +10,22 @@ import TextInput from '../../components/TextInput';
 import { theme } from '../../core/theme';
 import { phoneValidator, passwordValidator } from '../../core/utils';
 import AuthController from '../../controllers/AuthController';
-import AsyncStorage from '@react-native-community/async-storage';
+
 
 class LoginScreen extends Component {
     constructor(props) {
         super(props);
         this.AuthController = new AuthController()
         this.state = {
-            phone: { value: '+923422114890', error: '' },
+            phone: { value: '+923433443215', error: '' },
             password: { value: 'abc123', error: '' },
         };
     }
 
     async componentDidMount() {
-        const value = await AsyncStorage.getItem('@userID')
-        if (value !== null) this.props.navigation.replace('Chatrooms')
+        const role = await AsyncStorage.getItem('@role')
+        if (role === 'student') this.props.navigation.replace('Chatrooms')
+        else if (role === 'moderator') this.props.navigation.replace('Moderator')
         else return
     }
 
@@ -47,10 +50,14 @@ class LoginScreen extends Component {
                 ['@userID', response.user._id],
                 ['@username', response.user.name],
                 ['@userImage', response.user.userImage],
+                ['@role', response.user.role],
                 ['@token', response.token]
             ])
             alert(response.message)
-            this.props.navigation.navigate('Chatroom');
+            // if (role === 'student') this.props.navigation.replace('Chatrooms')
+            // else if (role === 'moderator') this.props.navigation.replace('Moderator')
+
+            this.props.navigation.replace('Chatrooms');
         } else if (response.status === false) {
             alert(response.message)
         }

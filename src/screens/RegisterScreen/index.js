@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
+
 import Background from '../../components/Background';
 import Logo from '../../components/Logo';
 import Header from '../../components/Header';
@@ -8,7 +10,6 @@ import TextInput from '../../components/TextInput';
 import { theme } from '../../core/theme';
 import { passwordValidator, nameValidator, phoneValidator } from '../../core/utils';
 import AuthController from '../../controllers/AuthController';
-import AsyncStorage from '@react-native-community/async-storage';
 
 export default class RegisterScreen extends Component {
     constructor(props) {
@@ -47,7 +48,7 @@ export default class RegisterScreen extends Component {
                 ['@token', response.token]
             ])
             alert(response.message)
-            this.props.navigation.navigate('Chatroom');
+            this.props.navigation.replace('Chatrooms');
         } else if (response.status === false) {
             alert(response.message)
         }
