@@ -46,7 +46,7 @@ class LoginScreen extends Component {
         const body = { phone: phone.value, password: password.value }
         const response = await this.AuthController.LoginAsync(body)
         if (response.status === true) {
-            AsyncStorage.multiSet([
+            await AsyncStorage.multiSet([
                 ['@userID', response.user._id],
                 ['@username', response.user.name],
                 ['@userImage', response.user.userImage],
@@ -54,10 +54,10 @@ class LoginScreen extends Component {
                 ['@token', response.token]
             ])
             alert(response.message)
-            // if (role === 'student') this.props.navigation.replace('Chatrooms')
-            // else if (role === 'moderator') this.props.navigation.replace('Moderator')
 
-            this.props.navigation.replace('Chatrooms');
+            if (response.user.role === 'student') this.props.navigation.replace('Chatrooms')
+            else if (response.user.role === 'moderator') this.props.navigation.replace('Moderator')
+
         } else if (response.status === false) {
             alert(response.message)
         }
