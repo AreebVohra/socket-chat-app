@@ -153,6 +153,7 @@ export default class ChatScreen extends Component {
                 { icon: 'reply', onPress: this._action },
               ]
             }
+            {...this.props}
           />
           <GiftedChat
             messages={messages}
